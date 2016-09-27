@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,7 +59,7 @@ public class MySqlDbStrategy implements dbStrategy {
     }
     
     @Override
-    public final Map<String,Object> findRecordByKey(String table, String field, String key) throws SQLException {
+    public final Map<String,Object> findRecordByKey(String table, String field, Object key) throws SQLException {
         PreparedStatement pstmt = null;
 	ResultSet rs = null;
         Object ob = null;
@@ -67,7 +68,7 @@ public class MySqlDbStrategy implements dbStrategy {
         String sql = "SELECT * FROM " + table + " WHERE " + field + " = ?";
         pstmt = conn.prepareStatement(sql);
         
-        pstmt.setInt(1, Integer.parseInt(key));
+        pstmt.setObject(1, key);
 	rs = pstmt.executeQuery();
         
         ResultSetMetaData rsmd = rs.getMetaData();
@@ -83,6 +84,37 @@ public class MySqlDbStrategy implements dbStrategy {
         return record;
         
     }
+    
+    public PreparedStatement buildDeleteStatement(String table, String field, Object value) throws SQLException {
+        String sql = "DELETE FROM " + table + " WHERE " + field + " =  ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        
+        ps.setObject(1, value);
+        return ps;
+    }
+    
+    public PreparedStatement buildInsertStatement(String table, List<String> colNames, List<Object> colValues) throws SQLException {
+        String sql = "INSERT INTO " + table + " (";
+        StringJoiner sj = new StringJoiner(",", "(", ")");
+        for (String cols : colNames) {
+            sj.add(cols);
+        }
+        
+        
+        PreparedStatement ps = conn.prepareStatement(sql);
+        return ps;
+    }
+    
+    public final void deleteRecordByKey(String table, String field, Object value) throws SQLException {
+        PreparedStatement ps = buildDeleteStatement(table, field, value);
+        ps.executeUpdate();
+    }
+    
+    public final void insertRecord(String table, List<String> colNames, List<Object> colValues) {
+        int i;
+        
+    }
+   
     
     public static void main(String[] args) throws Exception {
         MySqlDbStrategy db = new MySqlDbStrategy();

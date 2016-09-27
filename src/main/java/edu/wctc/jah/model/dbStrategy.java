@@ -21,6 +21,7 @@ public interface dbStrategy {
 
     void openConnection(String driverClass, String url, String userName, String passWord) throws ClassNotFoundException, SQLException;
     
-    Map<String,Object> findRecordByKey(String table, String field, String key) throws SQLException;
+    Map<String,Object> findRecordByKey(String table, String field, Object key) throws SQLException;
     
+    void deleteRecordByKey(String table, String field, Object value) throws SQLException;
 }

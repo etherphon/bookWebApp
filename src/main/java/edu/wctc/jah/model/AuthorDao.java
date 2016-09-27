@@ -72,6 +72,13 @@ public class AuthorDao implements AuthorDaoInterface {
         return author;
     }
     
+    public final void deleteAuthorById(String id) throws SQLException, NumberFormatException, ClassNotFoundException {
+        db.openConnection(driverClass, url, userName, passWord);
+        Integer pkv = Integer.parseInt(id);
+        db.deleteRecordByKey("author", "author_id", pkv);
+        db.closeConnection();
+    }
+    
     public dbStrategy getDb() {
         return db;
     }
