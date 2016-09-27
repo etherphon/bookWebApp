@@ -18,9 +18,8 @@
 
 <html>
     <head>
-        <link href="style/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-        <link href="style/bootstrap-theme.min.css" rel="stylesheet" type="text/css"/>
-        <script src="scripts/bootstrap.min.js" type="text/javascript"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
         <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
         <link href="style/bookStyle.css" rel="stylesheet" type="text/css"/>
         <title>Author List</title>
@@ -28,20 +27,27 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
-        <h2>Author List</h2><br>
-        <table class="table table-hover">
-            <tr>
-                <th>Author ID</th>
-                <th>Author Name</th>
-                <th>Date Added</th>
-            </tr>
-            <c:forEach var="author" items="${authorList}" varStatus="rowCount">
-                <tr>
-                    <td>${author.authorId}</td>
-                    <td>${author.authorName}</td>
-                    <td>${author.dateAdded}</td>
-                </tr>
-            </c:forEach>
-        </table>
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <div class="container" id="bTable">
+                <h2>Author List</h2><br>
+                <table class="table table-hover">
+                    <tr>
+                        <th class="tableHead">Author ID</th>
+                        <th class="tableHead">Author Name</th>
+                        <th class="tableHead">Date Added</th>
+                    </tr>
+                    <c:forEach var="author" items="${authorList}" varStatus="rowCount">
+                    <tr>
+                        <td>${author.authorId}</td>
+                        <td>${author.authorName}</td>
+                        <td>${author.dateAdded}</td>
+                    </tr>
+                    </c:forEach>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </body>
 </html>

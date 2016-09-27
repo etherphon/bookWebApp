@@ -6,7 +6,9 @@
 package edu.wctc.jah.model;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,25 +17,29 @@ import java.util.List;
  */
 public class AuthorService {
     
-    private List<Author> authorList;
+    private AuthorDaoInterface dao;
     
-    public AuthorService() {
-        Author A1 = new Author(1111);
-        A1.setAuthorName("Aldous Huxley");
-        A1.setDateAdded(Date.valueOf(LocalDate.now()));
-        Author A2 = new Author(2222);
-        A2.setAuthorName("Douglas Adams");
-        A2.setDateAdded(Date.valueOf(LocalDate.now()));
-        Author A3 = new Author(3333);
-        A3.setAuthorName("Alan Watts");
-        A3.setDateAdded(Date.valueOf(LocalDate.now()));
-        authorList.add(A1);
-        authorList.add(A2);
-        authorList.add(A3);
+    public AuthorService(AuthorDaoInterface dao) {
+        this.dao = dao;
     }
     
-    public final List<Author> getAuthorList() {
-        return authorList;
+    public final List<Author> getAuthorList() throws ClassNotFoundException, SQLException {
+        return dao.getAuthorList();
+    }
+ 
+    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+        AuthorDaoInterface dao = new AuthorDao(
+        new MySqlDbStrategy(),
+                "com.mysql.jdbc.Driver",
+                "jdbc:mysql://localhost:3306/book",
+                "root",
+                "admin"
+        );
+        
+        AuthorService srv = new AuthorService(dao);
+        List<Author> authors = srv.getAuthorList();
+        System.out.println(authors);
+        
     }
     
 }
