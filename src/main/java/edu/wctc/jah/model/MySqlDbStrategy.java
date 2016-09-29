@@ -94,13 +94,19 @@ public class MySqlDbStrategy implements dbStrategy {
     }
     
     public PreparedStatement buildInsertStatement(String table, List<String> colNames, List<Object> colValues) throws SQLException {
-        String sql = "INSERT INTO " + table + " (";
-        StringJoiner sj = new StringJoiner(",", "(", ")");
+        String sql = "INSERT INTO " + table + " ";
+        StringJoiner sjCols = new StringJoiner(", ", "(", ")");
         for (String cols : colNames) {
-            sj.add(cols);
+            sjCols.add(cols);
         }
-        
-        
+        sql += sjCols.toString();
+        sql += " VALUES ";
+        StringJoiner sjValues = new StringJoiner(", ", "(", ")");
+        for (Object o : colValues) {
+            sjValues.add("?");
+        }
+        sql += sjValues.toString();
+        //sql += ";";
         PreparedStatement ps = conn.prepareStatement(sql);
         return ps;
     }
@@ -110,9 +116,15 @@ public class MySqlDbStrategy implements dbStrategy {
         ps.executeUpdate();
     }
     
-    public final void insertRecord(String table, List<String> colNames, List<Object> colValues) {
+    public final void insertRecord(String table, List<String> colNames, List<Object> colValues) throws SQLException {
         int i;
+        PreparedStatement ps = buildInsertStatement(table, colNames, colValues);
         
+        for (i = 0; i < colValues.size(); i++) {
+            ps.setObject(i+1, colValues.get(i));
+        }
+        
+        ps.executeUpdate();
     }
    
     

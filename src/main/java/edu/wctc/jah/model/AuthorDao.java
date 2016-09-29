@@ -6,6 +6,7 @@
 package edu.wctc.jah.model;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -79,6 +80,18 @@ public class AuthorDao implements AuthorDaoInterface {
         db.closeConnection();
     }
     
+    public final void addAuthor(String authorName) throws ClassNotFoundException, SQLException {
+        db.openConnection(driverClass, url, userName, passWord);
+        List<String> columnNames = new ArrayList<>();
+        columnNames.add("author_name");
+        columnNames.add("date_added");
+        List<Object> colValues = new ArrayList<>();
+        colValues.add("'" + authorName + "'");
+        colValues.add(new Date());
+        db.insertRecord("author", columnNames, colValues);
+        db.closeConnection();
+    }
+    
     public dbStrategy getDb() {
         return db;
     }
@@ -96,6 +109,7 @@ public class AuthorDao implements AuthorDaoInterface {
                 "admin"
         );
         
+        dao.addAuthor("James Joyce");
         //List<Author> authors = dao.getAuthorList();
         Author author = dao.findAuthorById("1");
         System.out.println(author);

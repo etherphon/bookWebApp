@@ -24,4 +24,6 @@ public interface dbStrategy {
     Map<String,Object> findRecordByKey(String table, String field, Object key) throws SQLException;
     
     void deleteRecordByKey(String table, String field, Object value) throws SQLException;
+    
+    void insertRecord(String table, List<String> colNames, List<Object> colValues) throws SQLException;
 }

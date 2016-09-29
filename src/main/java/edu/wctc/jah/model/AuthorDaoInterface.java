@@ -20,4 +20,5 @@ public interface AuthorDaoInterface {
     
     void deleteAuthorById(String id) throws SQLException, NumberFormatException, ClassNotFoundException;
     
+    void addAuthor(String authorName) throws ClassNotFoundException, SQLException;
 }
