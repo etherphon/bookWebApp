@@ -8,7 +8,9 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,11 +113,13 @@ public class MySqlDbStrategy implements dbStrategy {
         return ps;
     }
     
+    @Override
     public final void deleteRecordByKey(String table, String field, Object value) throws SQLException {
         PreparedStatement ps = buildDeleteStatement(table, field, value);
         ps.executeUpdate();
     }
     
+    @Override
     public final void insertRecord(String table, List<String> colNames, List<Object> colValues) throws SQLException {
         int i;
         PreparedStatement ps = buildInsertStatement(table, colNames, colValues);
@@ -126,15 +130,49 @@ public class MySqlDbStrategy implements dbStrategy {
         
         ps.executeUpdate();
     }
+    
+    public PreparedStatement buildUpdateStatement(String table, String primaryKey, List<String> colNames) throws SQLException {
+        PreparedStatement ps = null;
+        
+        String sql = "UPDATE " + table + " SET ";
+        StringJoiner sjCols = new StringJoiner(", ");
+        for (int i = 0; i < colNames.size(); i++) {
+            sjCols.add(colNames.get(i) + " = ?");
+        }
+        sql += sjCols.toString();
+        sql += " WHERE " + primaryKey + " = ?";
+        return conn.prepareStatement(sql);
+    }
+    
+    @Override
+    public final void updateRecord(String table, String primaryKey, Object pkValue, List<String> colnames, List<Object> colVals) throws SQLException {
+        PreparedStatement ps = buildUpdateStatement(table, primaryKey, colnames);
+        int i;
+        
+        for (i = 0; i < colVals.size(); i++) {
+            ps.setObject(i+1, colVals.get(i));
+        }
+        
+        ps.setObject(i+1, pkValue);
+        
+        ps.executeUpdate();
+        
+    }
    
     
     public static void main(String[] args) throws Exception {
         MySqlDbStrategy db = new MySqlDbStrategy();
         db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
         //List<Map<String, Object>> records = db.findAllRecords("author", 10);
-        Map<String, Object> a = db.findRecordByKey("author", "author_id", "1");
-        
-        System.out.println(a);
+        //Map<String, Object> a = db.findRecordByKey("author", "author_id", "1");
+        List<String> colnames = new ArrayList<>();
+        List<Object> colvals = new ArrayList<>();
+        colnames.add("author_name");
+        colnames.add("date_added");
+        colvals.add("Joel Hedding");
+        colvals.add(new Date());
+        db.updateRecord("author", "author_id", 1, colnames, colvals);
+        //System.out.println("Complete");
         //System.out.println(records);
         db.closeConnection();
 

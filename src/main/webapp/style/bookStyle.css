@@ -67,6 +67,12 @@ input[type=text] {
     padding: 4px;
 }
 
+input[type=radio] {
+    margin-right: 10px;
+    position: relative;
+    top: 3px;
+}
+
 label {
      margin-left: 10px;
 }

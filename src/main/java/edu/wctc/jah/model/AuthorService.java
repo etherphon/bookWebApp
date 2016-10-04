@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -26,7 +27,47 @@ public class AuthorService {
     public final List<Author> getAuthorList() throws ClassNotFoundException, SQLException {
         return dao.getAuthorList();
     }
+    
+    public final Author getAuthor(String id) throws ClassNotFoundException, SQLException {
+        if (id == null || id.isEmpty() || !StringUtils.isNumeric(id)) {
+            throw new IllegalArgumentException();
+        } else {
+            return dao.findAuthorById(id.trim());
+        }
+    }
+    
+    public final void deleteAuthorById(String id) throws SQLException, NumberFormatException, ClassNotFoundException {
+        if (id == null || id.isEmpty() || !StringUtils.isNumeric(id)) {
+            throw new IllegalArgumentException();
+        } 
+            dao.deleteAuthorById(id.trim());
+        }
+    
+    public final void addAuthor(String authorName) throws ClassNotFoundException, SQLException {
+        if (authorName == null || authorName.isEmpty()) {
+            throw new IllegalArgumentException();
+        } else {
+            dao.addAuthor(authorName.trim());
+        }
+    }
  
+    public final void updateAuthor(String newName, String pkValue) throws ClassNotFoundException, SQLException {
+        if (newName == null || newName.isEmpty() || pkValue == null || pkValue.isEmpty()) {
+            throw new IllegalArgumentException();
+        } else {
+            String table = "author";
+            String primaryKey = "author_id";
+            List<String> colnames = new ArrayList<>();
+            List<Object> colVals = new ArrayList<>();
+            colnames.add("author_name");
+            colnames.add("date_added");
+            colVals.add(newName);
+            colVals.add(dao.findAuthorById(pkValue).getDateAdded());
+            dao.editAuthor(table, primaryKey, pkValue, colnames, colVals);
+        }
+        
+    }
+    
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         AuthorDaoInterface dao = new AuthorDao(
         new MySqlDbStrategy(),

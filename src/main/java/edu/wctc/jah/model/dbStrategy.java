@@ -26,4 +26,6 @@ public interface dbStrategy {
     void deleteRecordByKey(String table, String field, Object value) throws SQLException;
     
     void insertRecord(String table, List<String> colNames, List<Object> colValues) throws SQLException;
+    
+    void updateRecord(String table, String primaryKey, Object pkValue, List<String> colnames, List<Object> colVals) throws SQLException;
 }

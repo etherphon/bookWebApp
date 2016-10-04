@@ -19,6 +19,11 @@ import java.util.Map;
  */
 public class AuthorDao implements AuthorDaoInterface {
     
+    public static final String AUTHOR = "author";
+    public static final String AUTHOR_ID = "author_id";
+    public static final String DATE_ADDED = "date_added";
+    public static final String AUTHOR_N = "author_name";
+    
     private dbStrategy db;
     private String driverClass;
     private String url;
@@ -36,18 +41,18 @@ public class AuthorDao implements AuthorDaoInterface {
     @Override
     public List<Author> getAuthorList() throws ClassNotFoundException, SQLException {
         db.openConnection(driverClass, url, userName, passWord);
-        List<Map<String, Object>> records = db.findAllRecords("author", 500);
+        List<Map<String, Object>> records = db.findAllRecords(AUTHOR, 500);
         List<Author> authors = new ArrayList<>();
         
         for (Map<String, Object> rec : records) {
             Author author = new Author();
-            author.setAuthorId(Integer.parseInt(rec.get("author_id").toString()));
-            if (rec.get("author_name").toString() != null) {
-                author.setAuthorName(rec.get("author_name").toString());
+            author.setAuthorId(Integer.parseInt(rec.get(AUTHOR_ID).toString()));
+            if (rec.get(AUTHOR_N).toString() != null) {
+                author.setAuthorName(rec.get(AUTHOR_N).toString());
             } else {
                 author.setAuthorName("Unknown");
             }
-            author.setDateAdded((Date)rec.get("date_added"));
+            author.setDateAdded((Date)rec.get(DATE_ADDED));
             authors.add(author);
         }
         db.closeConnection();
@@ -60,15 +65,15 @@ public class AuthorDao implements AuthorDaoInterface {
         db.openConnection(driverClass, url, userName, passWord);
         Map<String,Object> rec = new LinkedHashMap<>();
         
-        rec = db.findRecordByKey("author", "author_id", id);
+        rec = db.findRecordByKey(AUTHOR, AUTHOR_ID, id);
         
-        author.setAuthorId(Integer.parseInt(rec.get("author_id").toString()));
-            if (rec.get("author_name").toString() != null) {
-                author.setAuthorName(rec.get("author_name").toString());
+        author.setAuthorId(Integer.parseInt(rec.get(AUTHOR_ID).toString()));
+            if (rec.get(AUTHOR_N).toString() != null) {
+                author.setAuthorName(rec.get(AUTHOR_N).toString());
             } else {
                 author.setAuthorName("Unknown");
             }
-            author.setDateAdded((Date)rec.get("date_added"));
+            author.setDateAdded((Date)rec.get(DATE_ADDED));
             
         return author;
     }
@@ -76,19 +81,19 @@ public class AuthorDao implements AuthorDaoInterface {
     public final void deleteAuthorById(String id) throws SQLException, NumberFormatException, ClassNotFoundException {
         db.openConnection(driverClass, url, userName, passWord);
         Integer pkv = Integer.parseInt(id);
-        db.deleteRecordByKey("author", "author_id", pkv);
+        db.deleteRecordByKey(AUTHOR, AUTHOR_ID, pkv);
         db.closeConnection();
     }
     
     public final void addAuthor(String authorName) throws ClassNotFoundException, SQLException {
         db.openConnection(driverClass, url, userName, passWord);
         List<String> columnNames = new ArrayList<>();
-        columnNames.add("author_name");
-        columnNames.add("date_added");
+        columnNames.add(AUTHOR_N);
+        columnNames.add(DATE_ADDED);
         List<Object> colValues = new ArrayList<>();
         colValues.add("'" + authorName + "'");
         colValues.add(new Date());
-        db.insertRecord("author", columnNames, colValues);
+        db.insertRecord(AUTHOR, columnNames, colValues);
         db.closeConnection();
     }
     
@@ -98,6 +103,16 @@ public class AuthorDao implements AuthorDaoInterface {
 
     public void setDb(dbStrategy db) {
         this.db = db;
+    }
+   
+    public final void editAuthor(String table, String primaryKey, Object pkValue, List<String> colnames, List<Object> colVals) throws ClassNotFoundException, SQLException {
+        db.openConnection(driverClass, url, userName, passWord);
+        //List<String> columnNames = new ArrayList<>();
+        //columnNames.add(AUTHOR_N);
+        //columnNames.add(DATE_ADDED);
+        //List<Object> colValues = new ArrayList<>();
+        db.updateRecord(table, primaryKey, pkValue, colnames, colVals);
+        db.closeConnection();
     }
     
     public static void main(String[] args) throws ClassNotFoundException, SQLException {

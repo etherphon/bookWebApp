@@ -29,7 +29,24 @@ import java.util.logging.Logger;
  */
 @WebServlet(name = "AuthorController", urlPatterns = {"/AuthorController"})
 public class AuthorController extends HttpServlet {
+    
+        private AuthorDaoInterface dao = new AuthorDao(new MySqlDbStrategy(),
+                "com.mysql.jdbc.Driver",
+                "jdbc:mysql://localhost:3306/book",
+                "root",
+                "admin");
+        
+        private AuthorService as = new AuthorService(dao);
 
+    public AuthorService getAs() {
+        return as;
+    }
+
+    public void setAs(AuthorService as) {
+        this.as = as;
+    }
+    
+    //AuthorEditController aec = new AuthorEditContoller();
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -43,19 +60,36 @@ public class AuthorController extends HttpServlet {
             throws ServletException, IOException, ClassNotFoundException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         
-        AuthorDaoInterface dao = new AuthorDao(new MySqlDbStrategy(),
-                "com.mysql.jdbc.Driver",
-                "jdbc:mysql://localhost:3306/book",
-                "root",
-                "admin");
         
-        AuthorService as = new AuthorService(dao);
+        // getParameterValues returns an array of strings from chceckboxes
         
         List<Author> authorList = as.getAuthorList();
         request.setAttribute("authorList", authorList);
         RequestDispatcher view = request.getRequestDispatcher("viewAuthors.jsp");
         view.forward(request, response);
         
+//        String formAction = request.getParameter("fAction");
+//        String authId = request.getParameter("authorPk");
+//        
+//        
+//        switch (formAction) {
+//            case "Add":
+//                String newAuthor = request.getParameter("newAuthor");
+//                as.addAuthor(newAuthor);
+//                request.setAttribute("addedAuthor", newAuthor);
+//                RequestDispatcher view2 = request.getRequestDispatcher("/RectangleResponse.jsp");
+//                view.forward(request, response);
+//            break;
+//            
+//            case "Update":
+//                
+//                as.updateAuthor(newName, authId);
+//            break;
+//            
+//            case "Delete":
+//                as.deleteAuthorById(authId);
+//            break;
+//        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
