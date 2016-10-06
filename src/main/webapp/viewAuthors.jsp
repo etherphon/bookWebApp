@@ -29,6 +29,10 @@
         <title>Author List</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta http-equiv="cache-control" content="max-age=0" />
+        <meta http-equiv="cache-control" content="no-cache" />
+        <meta http-equiv="expires" content="0" />
     </head>
     <body>
         <div class="col-md-2"></div>
@@ -52,12 +56,55 @@
                 </table>
                 <div class="col-md-2"><input class="btn btn-default btn-sm" type="button" name="fAction" id="fActionAdd" value="Add"></div>
                 <div class="col-md-2"><input class="btn btn-default btn-sm" type="button" name="fAction" id="fActionUpd" value="Update"></div>
-                <div class="col-md-2"><input class="btn btn-default btn-sm" type="button" name="fAction" id="fActionDel" value="Delete"></div>
-                <div class="col-md-6"></div>
+                <div class="col-md-2"><input class="btn btn-default btn-sm" type="button" name="fActionDel" id="fActionDel" value="Delete"></div>
+                <div class="col-md-6">
+                    <div id="addScreen" hidden>
+                        <div class="input-group">
+                            <input type="text" class="form-control input-sm" name="newAuthor" placeholder="Author name..." id="newAuthor">
+                            <!--<input type="hidden" name="fAction" id="fAction" value="Add">-->
+                            <span class="input-group-btn">
+                                <input type="submit" class="btn btn-secondary btn-sm btn-info" name="fActionAdd" id="addButton" value="Add">
+                            </span>    
+                        </div>
+                    </div>
+                    <div id="updScreen" hidden>
+                        <div class="input-group">
+                            <input type="text" class="form-control input-sm" name="updAuthor" placeholder="Author name.." id="updAuthor">
+                            <!--<input type="hidden" name="fAction" id="fAction" value="Update">-->
+                            <span class="input-group-btn">
+                                <input type="submit" class="btn btn-secondary btn-sm btn-info" name="fActionUpd" id="updButton" value="Update">
+                            </span>    
+                        </div>
+                    </div>
+                    <div id="delScreen" hidden>
+                        <span id="delalert">Are you sure?&nbsp&nbsp;</span><input class="btn btn-default btn-sm btn-warning" type="submit" name="fActionDel" id="delButton" value="Delete">
+                    </div>    
+                </div>
             </div>
+            <input type="hidden" name="fAction" id="fAction" value="">
             </form>
         </div>
         <div class="col-md-2"></div>
+        
+        <div id="add-dialog" title="Author Added">
+            <p>
+            <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 50px 0;"></span>
+                Author added to the database.
+            </p>
+        </div>
+        <div id="upd-dialog" title="Author Updated">
+            <p>
+            <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 50px 0;"></span>
+                Author information has been updated.
+            </p>
+        </div>
+        <div id="del-dialog" title="Author Deleted">
+            <p>
+            <span class="ui-icon ui-icon-circle-check" style="float:left; margin:0 7px 50px 0;"></span>
+                Author has been removed from the database.
+            </p>
+        </div>
+        
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </body>
 </html>

@@ -1,5 +1,6 @@
 package edu.wctc.jah.model;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -17,12 +18,14 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.enterprise.context.Dependent;
 
 /**
  *
  * @author jhedding
  */
-public class MySqlDbStrategy implements dbStrategy {
+@Dependent
+public class MySqlDbStrategy implements dbStrategy, Serializable {
     
     private Connection conn;
     
@@ -40,7 +43,7 @@ public class MySqlDbStrategy implements dbStrategy {
     }
     
     @Override
-    public final List<Map<String, Object>> findAllRecords(String tableName, int maxRecords) throws SQLException {
+    public List<Map<String, Object>> findAllRecords(String tableName, int maxRecords) throws SQLException {
         String sql = "SELECT * FROM " + tableName + " LIMIT " + maxRecords;
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
@@ -61,7 +64,7 @@ public class MySqlDbStrategy implements dbStrategy {
     }
     
     @Override
-    public final Map<String,Object> findRecordByKey(String table, String field, Object key) throws SQLException {
+    public Map<String,Object> findRecordByKey(String table, String field, Object key) throws SQLException {
         PreparedStatement pstmt = null;
 	ResultSet rs = null;
         Object ob = null;
@@ -114,13 +117,13 @@ public class MySqlDbStrategy implements dbStrategy {
     }
     
     @Override
-    public final void deleteRecordByKey(String table, String field, Object value) throws SQLException {
+    public void deleteRecordByKey(String table, String field, Object value) throws SQLException {
         PreparedStatement ps = buildDeleteStatement(table, field, value);
         ps.executeUpdate();
     }
     
     @Override
-    public final void insertRecord(String table, List<String> colNames, List<Object> colValues) throws SQLException {
+    public void insertRecord(String table, List<String> colNames, List<Object> colValues) throws SQLException {
         int i;
         PreparedStatement ps = buildInsertStatement(table, colNames, colValues);
         
@@ -145,7 +148,7 @@ public class MySqlDbStrategy implements dbStrategy {
     }
     
     @Override
-    public final void updateRecord(String table, String primaryKey, Object pkValue, List<String> colnames, List<Object> colVals) throws SQLException {
+    public void updateRecord(String table, String primaryKey, Object pkValue, List<String> colnames, List<Object> colVals) throws SQLException {
         PreparedStatement ps = buildUpdateStatement(table, primaryKey, colnames);
         int i;
         
@@ -160,23 +163,23 @@ public class MySqlDbStrategy implements dbStrategy {
     }
    
     
-    public static void main(String[] args) throws Exception {
-        MySqlDbStrategy db = new MySqlDbStrategy();
-        db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
-        //List<Map<String, Object>> records = db.findAllRecords("author", 10);
-        //Map<String, Object> a = db.findRecordByKey("author", "author_id", "1");
-        List<String> colnames = new ArrayList<>();
-        List<Object> colvals = new ArrayList<>();
-        colnames.add("author_name");
-        colnames.add("date_added");
-        colvals.add("Joel Hedding");
-        colvals.add(new Date());
-        db.updateRecord("author", "author_id", 1, colnames, colvals);
-        //System.out.println("Complete");
-        //System.out.println(records);
-        db.closeConnection();
-
-    }
+//    public static void main(String[] args) throws Exception {
+//        MySqlDbStrategy db = new MySqlDbStrategy();
+//        db.openConnection("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", "root", "admin");
+//        //List<Map<String, Object>> records = db.findAllRecords("author", 10);
+//        //Map<String, Object> a = db.findRecordByKey("author", "author_id", "1");
+//        List<String> colnames = new ArrayList<>();
+//        List<Object> colvals = new ArrayList<>();
+//        colnames.add("author_name");
+//        colnames.add("date_added");
+//        colvals.add("Joel Hedding");
+//        colvals.add(new Date());
+//        db.updateRecord("author", "author_id", 1, colnames, colvals);
+//        //System.out.println("Complete");
+//        //System.out.println(records);
+//        db.closeConnection();
+//
+//    }
 
 //  DELETE FROM authors WHERE author_id = 2;
 //  DELETE FROM (TABLE) WHERE (PRIMARY KEY) = (VAR);

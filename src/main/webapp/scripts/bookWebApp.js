@@ -7,36 +7,74 @@
 $(function () {
 
     $('#fActionAdd').click(function (e) {
-        $('#bTable').hide("slide", { direction: "up" }, 1000);
-        $('#addScreen').show("slide", { direction: "down" }, 1000);
+        //$('#bTable').hide("slide", { direction: "up" }, 1000);
+        $("#fAction").val("Add");
+        $('#addScreen').show("drop", { direction: "left" }, 500);
     });
 
     $('#fActionUpd').click(function (e) {
-        $('#bTable').hide("slide", { direction: "up" }, 1000);
-        $('#updScreen').show("slide", { direction: "down" }, 1000);
+        //$('#bTable').hide("slide", { direction: "up" }, 1000);
+        $("#fAction").val("Update");
+        $('#updScreen').show("drop", { direction: "left" }, 500);
     });
     
     $('#fActionDel').click(function (e) {
-        $('#bTable').hide("slide", { direction: "up" }, 1000);
-        $('#delScreen').show("slide", { direction: "down" }, 1000);
+        //$('#bTable').hide("slide", { direction: "up" }, 1000);
+        $("#fAction").val("Delete");
+        $('#delScreen').show("drop", { direction: "left" }, 500);
     });
 
     $('#addButton').click(function (e) {
         //$('#cInfoForm').validate();
-        $('#addScreen').hide("slide", { direction: "up" }, 1000);
-        $('#bTable').show("slide", { direction: "down" }, 1000);
+        $('#addScreen').hide("drop", { direction: "left" }, 500);
+        //$('#bTable').show("slide", { direction: "down" }, 1000);
+        $("#add-dialog").dialog("open");
     });
     
     $('#updButton').click(function (e) {
         //$('#cInfoForm').validate();
-        $('#updScreen').hide("slide", { direction: "up" }, 1000);
-        $('#bTable').show("slide", { direction: "down" }, 1000);
+        $('#updScreen').hide("drop", { direction: "left" }, 500);
+        //$('#bTable').show("slide", { direction: "down" }, 1000);
+        $("#upd-dialog").dialog("open");
+        
     });
     
     $('#delButton').click(function (e) {
         //$('#cInfoForm').validate();
-        $('#delScreen').hide("slide", { direction: "up" }, 1000);
-        $('#bTable').show("slide", { direction: "down" }, 1000);
+        $('#delScreen').hide("drop", { direction: "left" }, 500);
+        //$('#bTable').show("slide", { direction: "down" }, 1000);
+        $("#del-dialog").dialog("open");
     });
+    
+    $("#add-dialog").dialog({
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            Ok: function() {
+                $( this ).dialog( "close" );
+            }
+        }
+    });
+    
+    $("#upd-dialog").dialog({
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            Ok: function() {
+                $( this ).dialog( "close" );
+            }
+        }
+    });
+    
+    $("#del-dialog").dialog({
+        modal: true,
+        autoOpen: false,
+        buttons: {
+            Ok: function() {
+                $( this ).dialog( "close" );
+            }
+        }
+    });
+    
 
 });

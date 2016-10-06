@@ -105,3 +105,19 @@ label {
     padding: 4px 10px 4px 10px;
     margin-left: 10px;
 }
+
+#delalert {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-right: 20px;
+    margin-left: 50px;
+}
+
+#delScreen {
+    width: 70%;
+    background-color: rgba(255,255,255,0.4);
+    padding: 0px;
+    border-radius: 5px;
+    text-align: right;
+    border: 1px solid black;   
+}

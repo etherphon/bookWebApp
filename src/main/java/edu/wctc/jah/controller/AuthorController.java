@@ -22,6 +22,7 @@ import edu.wctc.jah.model.MySqlDbStrategy;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 
 /**
  *
@@ -30,23 +31,31 @@ import java.util.logging.Logger;
 @WebServlet(name = "AuthorController", urlPatterns = {"/AuthorController"})
 public class AuthorController extends HttpServlet {
     
-        private AuthorDaoInterface dao = new AuthorDao(new MySqlDbStrategy(),
-                "com.mysql.jdbc.Driver",
-                "jdbc:mysql://localhost:3306/book",
-                "root",
-                "admin");
+        //public static final String DRIVER = "com.mysql.jdbc.Driver";      
+        private String driverClass;
+        private String URL;
+        private String userName;
+        private String passWord;
+          
+        @Inject
+        private AuthorService as;
+
+    //public void refreshAuthorList() {
         
-        private AuthorService as = new AuthorService(dao);
-
-    public AuthorService getAs() {
-        return as;
-    }
-
-    public void setAs(AuthorService as) {
-        this.as = as;
+    //}
+        
+    @Override
+    public void init() throws ServletException {
+        driverClass = "com.mysql.jdbc.Driver";
+        URL = "jdbc:mysql://localhost:3306/book";
+        userName = "root";
+        passWord = "admin";
     }
     
-    //AuthorEditController aec = new AuthorEditContoller();
+    private void configDbConnection() {
+        as.getDao().initDao(driverClass, URL, userName, passWord);
+    }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -60,36 +69,53 @@ public class AuthorController extends HttpServlet {
             throws ServletException, IOException, ClassNotFoundException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         
-        
+        try {
+            configDbConnection();
+            List<Author> authorList = as.getAuthorList();
+            request.setAttribute("authorList", authorList);
+        } catch (Exception e) {
+            request.setAttribute("errMsg", e.getCause().getMessage());
+        }
         // getParameterValues returns an array of strings from chceckboxes
         
-        List<Author> authorList = as.getAuthorList();
-        request.setAttribute("authorList", authorList);
+        
         RequestDispatcher view = request.getRequestDispatcher("viewAuthors.jsp");
         view.forward(request, response);
         
-//        String formAction = request.getParameter("fAction");
-//        String authId = request.getParameter("authorPk");
-//        
-//        
-//        switch (formAction) {
-//            case "Add":
-//                String newAuthor = request.getParameter("newAuthor");
-//                as.addAuthor(newAuthor);
-//                request.setAttribute("addedAuthor", newAuthor);
-//                RequestDispatcher view2 = request.getRequestDispatcher("/RectangleResponse.jsp");
-//                view.forward(request, response);
-//            break;
-//            
-//            case "Update":
-//                
-//                as.updateAuthor(newName, authId);
-//            break;
-//            
-//            case "Delete":
-//                as.deleteAuthorById(authId);
-//            break;
-//        }
+        String formAction = request.getParameter("fAction");
+        String authId = request.getParameter("authorPk");
+        List<Author> authorList;
+        
+        
+        switch (formAction) {
+            case "Add":
+                String newAuthor = request.getParameter("newAuthor");
+                as.addAuthor(newAuthor);
+                request.setAttribute("addedAuthor", newAuthor);
+                authorList = as.getAuthorList();
+                request.setAttribute("authorList", authorList);
+                view = request.getRequestDispatcher("/viewAuthors.jsp");
+                view.forward(request, response);
+            break;
+            
+            case "Update":
+                String updAuthor = request.getParameter("updAuthor");
+                as.updateAuthor(updAuthor, authId);
+                authorList = as.getAuthorList();
+                request.setAttribute("authorList", authorList);
+                view = request.getRequestDispatcher("/viewAuthors.jsp");
+                view.forward(request, response);
+            break;
+            
+            case "Delete":
+                authId = request.getParameter("authorPk");
+                as.deleteAuthorById(authId);
+                authorList = as.getAuthorList();
+                request.setAttribute("authorList", authorList);
+                view = request.getRequestDispatcher("/viewAuthors.jsp");
+                view.forward(request, response);
+            break;
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -142,5 +168,15 @@ public class AuthorController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    public AuthorService getAs() {
+        return as;
+    }
+
+    public void setAs(AuthorService as) {
+        this.as = as;
+    }
+    
+    //public 
 
 }

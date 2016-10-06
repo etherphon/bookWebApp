@@ -24,5 +24,5 @@ public interface AuthorDaoInterface {
     
     void editAuthor(String table, String primaryKey, Object pkValue, List<String> colnames, List<Object> colVals) throws ClassNotFoundException, SQLException; 
     
-    
+    void initDao(String driver, String url, String user, String pass);
 }
