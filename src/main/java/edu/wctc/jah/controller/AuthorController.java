@@ -44,7 +44,7 @@ public class AuthorController extends HttpServlet {
         private String URL;
         private String userName;
         private String passWord;
-        private String webmasterEmail;
+        //private String webmasterEmail;
         
         @Inject
         private AuthorService as;
@@ -57,7 +57,10 @@ public class AuthorController extends HttpServlet {
         URL = getServletContext().getInitParameter("db.url");
         userName = getServletContext().getInitParameter("db.username");
         passWord = getServletContext().getInitParameter("db.password");
-        webmasterEmail = getServletContext().getInitParameter("webmaster-email");
+        //driverClass = DB_DRIVER;
+        //URL = DB_URL;
+        //userName = DB_USER;
+        //passWord = DB_PASS;
     }
     
     private void configDbConnection() {
@@ -72,6 +75,8 @@ public class AuthorController extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
+     * @throws java.lang.ClassNotFoundException
+     * @throws java.sql.SQLException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, ClassNotFoundException, SQLException {
@@ -85,6 +90,10 @@ public class AuthorController extends HttpServlet {
         
             String formAction = request.getParameter("fAction");
             String authId = request.getParameter("authorPk");
+            
+            if (formAction == null) {
+                formAction = "";
+            }
             
         
         switch (formAction) {
