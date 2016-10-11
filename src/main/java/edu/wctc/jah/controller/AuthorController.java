@@ -44,7 +44,8 @@ public class AuthorController extends HttpServlet {
         private String URL;
         private String userName;
         private String passWord;
-          
+        private String webmasterEmail;
+        
         @Inject
         private AuthorService as;
         
@@ -52,10 +53,11 @@ public class AuthorController extends HttpServlet {
         
     @Override
     public void init() throws ServletException {
-        driverClass = DB_DRIVER;
-        URL = DB_URL;
-        userName = DB_USER;
-        passWord = DB_PASS;
+        driverClass = getServletContext().getInitParameter("db.driver.class");
+        URL = getServletContext().getInitParameter("db.url");
+        userName = getServletContext().getInitParameter("db.username");
+        passWord = getServletContext().getInitParameter("db.password");
+        webmasterEmail = getServletContext().getInitParameter("webmaster-email");
     }
     
     private void configDbConnection() {
