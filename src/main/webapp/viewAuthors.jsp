@@ -9,12 +9,7 @@
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
-<%
-    Object obj = request.getAttribute("authorList");
-    if (obj == null) {
-        response.sendRedirect("AuthorController");
-    }
-%>
+
 
 <html>
     <head>
@@ -41,18 +36,22 @@
             <div class="container" id="bTable">
                 <h2>Author List</h2><br>
                 <table class="table table-hover">
-                    <tr>
-                        <th class="tableHead">Author ID</th>
-                        <th class="tableHead">Author Name</th>
-                        <th class="tableHead">Date Added</th>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th class="tableHead">Author ID</th>
+                            <th class="tableHead">Author Name</th>
+                            <th class="tableHead">Date Added</th>
+                        </tr>
+                    </thead>
                     <c:forEach var="author" items="${authorList}" varStatus="rowCount">
-                    <tr id="${author.authorId}">
-                        <td><input type="radio" name="authorPk" id="authorPk" value="${author.authorId}">${author.authorId}</td>
-                        <td>${author.authorName}</td>
-                        <td>${author.dateAdded}</td>
-                    </tr>
+                    <tbody>
+                        <tr id="${author.authorId}">
+                            <td><input type="radio" name="authorPk" id="authorPk" value="${author.authorId}">${author.authorId}</td>
+                            <td>${author.authorName}</td>
+                            <td><fmt:formatDate type="date" value="${author.dateAdded}" /></td>
+                        </tr>
                     </c:forEach>
+                    </tbody>
                 </table>
                 <div class="col-md-2"><input class="btn btn-default btn-sm" type="button" name="fAction" id="fActionAdd" value="Add"></div>
                 <div class="col-md-2"><input class="btn btn-default btn-sm" type="button" name="fAction" id="fActionUpd" value="Update"></div>
@@ -85,6 +84,8 @@
             </form>
         </div>
         <div class="col-md-2"></div>
+        
+        <!-- ADD DETAILS SCREEN HERE -->
         
         <div id="add-dialog" title="Author Added">
             <p>
