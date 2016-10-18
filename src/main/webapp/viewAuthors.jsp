@@ -92,7 +92,7 @@
             <input type="hidden" name="fAction" id="fAction" value="">
             </form>
                 <div class="col-md-6">${dateAndTime}</div>
-                <div class="col-md-6" id="webmaster">${webmaster}</div>
+                <div class="col-md-6" id="webmaster"><a href="mailto:${webmaster}">${webmaster}</a></div>
         </div>
         <div class="col-md-2"></div>
         
