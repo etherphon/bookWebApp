@@ -11,6 +11,11 @@ $(function () {
         $("#fAction").val("Add");
         $('#addScreen').show("drop", { direction: "left" }, 500);
     });
+    
+    $('#fActionHelp').click(function (e) {
+        //$('#bTable').hide("slide", { direction: "up" }, 1000);
+        $("#fAction").val("Help");
+    });
 
     $('#fActionUpd').click(function (e) {
         //$('#bTable').hide("slide", { direction: "up" }, 1000);

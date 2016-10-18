@@ -22,12 +22,13 @@ body {
 }
 
 #bTable h2 {
-    margin-left: 20px;
+    margin-left: 0px;
     font-size: 1.5em;
-    width: 70%;
-    background-color: rgba(255,255,255,0.4);
-    padding: 5px;
-    border-radius: 5px;
+    width: 90%;
+    background-color: rgba(255,255,255,0.3);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.3);
 }
 
 h3 {
@@ -60,9 +61,15 @@ input:focus, textarea:focus {
   outline: none;
 }
 
-.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
-    background-color: rgba(255,255,255,0.6);
+.table-hover .tRow:hover {
+    background-color: rgba(158,188,218,0.5);
+    /*background-color: rgba(130,180,194,0.6);*/
     border-radius: 6px;
+}
+
+.table th, .table td {
+    border-top: 1px solid rgba(0,0,0,0.5) !important;
+    border-bottom: 1px solid rgba(0,0,0,0.5) !important;
 }
 
 input[type=text] {
@@ -78,6 +85,11 @@ input[type=radio] {
     top: 3px;
 }
 
+.radiogroup {
+    position: relative;
+    top: -4px;
+}
+
 label {
      margin-left: 10px;
 }
@@ -85,6 +97,7 @@ label {
 .cButton:hover {
     box-shadow: 0px 0px 8px rgba(160,85,145,1);
     background-color: rgba(127,191,199,1);
+    border: 1px solid black;
 }
 
 .cButton {
@@ -95,8 +108,8 @@ label {
     border: 1px solid black;
     padding: 4px 10px 4px 10px;
     position: relative;
-    left: 40px;
-    top: 2px;
+    /*left: 40px;*/
+    /*top: 2px;*/
 }
 
 .resultBox {
@@ -125,4 +138,14 @@ label {
     border-radius: 5px;
     text-align: right;
     border: 1px solid black;   
+}
+
+#webmaster {
+    text-align: right;
+}
+
+.counts {
+    padding: 10px;
+    margin-right: 10px;
+    font-size: 1.1em;
 }

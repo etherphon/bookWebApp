@@ -13,6 +13,7 @@
 
 <html>
     <head>
+        <script src="https://use.fontawesome.com/19de87925f.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
         <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
@@ -34,7 +35,7 @@
         <div class="col-md-8">
             <form role="form" action="AuthorController" method="POST" name="authorForm" id="authorForm">
             <div class="container" id="bTable">
-                <h2>Author List</h2><br>
+                <h2><i class="fa fa-list-alt"></i>&nbsp;Author List</h2><br>
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -45,17 +46,22 @@
                     </thead>
                     <c:forEach var="author" items="${authorList}" varStatus="rowCount">
                     <tbody>
-                        <tr id="${author.authorId}">
-                            <td><input type="radio" name="authorPk" id="authorPk" value="${author.authorId}">${author.authorId}</td>
+                        <tr class="tRow" id="${author.authorId}">
+                            <td><span class="radiogroup"><input type="radio" name="authorPk" id="authorPk" value="${author.authorId}">${author.authorId}</span></td>
                             <td>${author.authorName}</td>
                             <td><fmt:formatDate type="date" value="${author.dateAdded}" /></td>
                         </tr>
                     </c:forEach>
                     </tbody>
                 </table>
-                <div class="col-md-2"><input class="btn btn-default btn-sm" type="button" name="fAction" id="fActionAdd" value="Add"></div>
-                <div class="col-md-2"><input class="btn btn-default btn-sm" type="button" name="fAction" id="fActionUpd" value="Update"></div>
-                <div class="col-md-2"><input class="btn btn-default btn-sm" type="button" name="fActionDel" id="fActionDel" value="Delete"></div>
+                <div class="col-md-6">
+                    <input class="btn btn-default btn-sm cButton" type="button" name="fActionAdd" id="fActionAdd" value="Add">
+                    <input class="btn btn-default btn-sm cButton" type="button" name="fActionUpd" id="fActionUpd" value="Update">
+                    <input class="btn btn-default btn-sm cButton" type="button" name="fActionDel" id="fActionDel" value="Delete">
+                    <input class="btn btn-default btn-sm cButton" type="button" name="fActionHelp" id="fActionHelp" value="Help">
+                </div>
+                
+                
                 <div class="col-md-6">
                     <div id="addScreen" hidden>
                         <div class="input-group">
@@ -79,9 +85,14 @@
                         <span id="delalert">Are you sure?&nbsp&nbsp;</span><input class="btn btn-default btn-sm btn-warning" type="submit" name="fActionDel" id="delButton" value="Delete">
                     </div>    
                 </div>
+                <div class="col-md-12" id="actionCount">
+                    <span class="counts">Added: ${numAdded}</span><span class="counts">Updated: ${numUpdated}</span><span class="counts">Deleted: ${numDeleted}</span>
+                </div>
             </div>
             <input type="hidden" name="fAction" id="fAction" value="">
             </form>
+                <div class="col-md-6">${dateAndTime}</div>
+                <div class="col-md-6" id="webmaster">${webmaster}</div>
         </div>
         <div class="col-md-2"></div>
         

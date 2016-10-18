@@ -20,9 +20,12 @@ import edu.wctc.jah.model.AuthorDaoInterface;
 import edu.wctc.jah.model.AuthorService;
 import edu.wctc.jah.model.MySqlDbStrategy;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -36,15 +39,21 @@ public class AuthorController extends HttpServlet {
         public static final String DB_USER = "root";
         public static final String DB_PASS = "admin";
         public static final String LIST_PAGE = "viewAuthors.jsp";
+        public static final String HELP_PAGE = "helpPage.jsp";
         public static final String ADD = "Add";
         public static final String DEL = "Delete";
         public static final String UPD = "Update";
+        public static final String HELP = "Help";
+        public static final String WEBMASTER = "jahedding@gmail.com";
     
         private String driverClass;
         private String URL;
         private String userName;
         private String passWord;
         //private String webmasterEmail;
+        int numAdded = 0;
+        int numUpdated = 0;
+        int numDeleted = 0;
         
         @Inject
         private AuthorService as;
@@ -57,10 +66,6 @@ public class AuthorController extends HttpServlet {
         URL = getServletContext().getInitParameter("db.url");
         userName = getServletContext().getInitParameter("db.username");
         passWord = getServletContext().getInitParameter("db.password");
-        //driverClass = DB_DRIVER;
-        //URL = DB_URL;
-        //userName = DB_USER;
-        //passWord = DB_PASS;
     }
     
     private void configDbConnection() {
@@ -82,6 +87,16 @@ public class AuthorController extends HttpServlet {
             throws ServletException, IOException, ClassNotFoundException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         
+        HttpSession session = request.getSession();
+        //session.setAttribute("attribute", ADD);
+        ServletContext ctx = request.getServletContext();
+        
+        synchronized(ctx) {
+            // add applications operations here
+            ctx.setAttribute("dateAndTime", new Date());
+            ctx.setAttribute("webmaster", WEBMASTER);
+        }
+        
         try {
             configDbConnection();
 //            refreshList(request, as);
@@ -100,6 +115,8 @@ public class AuthorController extends HttpServlet {
             case ADD:
                 String newAuthor = request.getParameter("newAuthor");
                 as.addAuthor(newAuthor);
+                numAdded++;
+                session.setAttribute("numAdded", numAdded);
                 request.setAttribute("addedAuthor", newAuthor);
                 refreshList(request, as);
                 view = request.getRequestDispatcher(LIST_PAGE);
@@ -109,6 +126,8 @@ public class AuthorController extends HttpServlet {
             case UPD:
                 String updAuthor = request.getParameter("updAuthor");
                 as.updateAuthor(updAuthor, authId);
+                numUpdated++;
+                session.setAttribute("numUpdated", numUpdated);
                 refreshList(request, as);
                 view = request.getRequestDispatcher(LIST_PAGE);
                 view.forward(request, response);
@@ -117,10 +136,15 @@ public class AuthorController extends HttpServlet {
             case DEL:
                 authId = request.getParameter("authorPk");
                 as.deleteAuthorById(authId);
+                numDeleted++;
+                session.setAttribute("numDeleted", numDeleted);
                 refreshList(request, as);
                 view = request.getRequestDispatcher(LIST_PAGE);
                 view.forward(request, response);
             break;
+            
+            case HELP:
+                response.sendRedirect(HELP_PAGE);
             
             default:
                 refreshList(request, as);
