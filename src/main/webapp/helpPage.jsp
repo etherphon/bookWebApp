@@ -33,12 +33,12 @@
                 <p>To edit an author select an author using the radio button on the left and click "Update", you may update the name of the author.</p>
                 <p>To delete an author select an author using the radio button on the left and click "Delete", then confirm.</p>
                 <br>
-                <a class="btn btn-default btn-small cButton" href="AuthorController" role="button">
+                <a class="btn btn-default btn-small cButton" href="<%= response.encodeURL("AuthorController")%>" role="button">
                     <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>&nbsp;Back to Author List</a>
             </div>
         </div>
         <div class="col-md-2"></div>
-        
+        <jsp:include page="footer.jsp" />
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </body>
 </html>

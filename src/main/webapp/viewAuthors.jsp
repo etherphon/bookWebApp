@@ -33,7 +33,7 @@
     <body>
         <div class="col-md-2"></div>
         <div class="col-md-8">
-            <form role="form" action="AuthorController" method="POST" name="authorForm" id="authorForm">
+            <form role="form" action="<%= response.encodeURL("AuthorController")%>" method="POST" name="authorForm" id="authorForm">
             <div class="container" id="bTable">
                 <h2><i class="fa fa-list-alt"></i>&nbsp;Author List</h2><br>
                 <table class="table table-hover">
@@ -91,8 +91,7 @@
             </div>
             <input type="hidden" name="fAction" id="fAction" value="">
             </form>
-                <div class="col-md-6">${dateAndTime}</div>
-                <div class="col-md-6" id="webmaster"><a href="mailto:${webmaster}">${webmaster}</a></div>
+                    <jsp:include page="footer.jsp" />
         </div>
         <div class="col-md-2"></div>
         

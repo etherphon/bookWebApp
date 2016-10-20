@@ -119,7 +119,7 @@ public class AuthorController extends HttpServlet {
                 session.setAttribute("numAdded", numAdded);
                 request.setAttribute("addedAuthor", newAuthor);
                 refreshList(request, as);
-                view = request.getRequestDispatcher(LIST_PAGE);
+                view = request.getRequestDispatcher(response.encodeURL(LIST_PAGE));
                 view.forward(request, response);
             break;
             
@@ -129,7 +129,7 @@ public class AuthorController extends HttpServlet {
                 numUpdated++;
                 session.setAttribute("numUpdated", numUpdated);
                 refreshList(request, as);
-                view = request.getRequestDispatcher(LIST_PAGE);
+                view = request.getRequestDispatcher(response.encodeURL(LIST_PAGE));
                 view.forward(request, response);
             break;
             
@@ -139,16 +139,16 @@ public class AuthorController extends HttpServlet {
                 numDeleted++;
                 session.setAttribute("numDeleted", numDeleted);
                 refreshList(request, as);
-                view = request.getRequestDispatcher(LIST_PAGE);
+                view = request.getRequestDispatcher(response.encodeURL(LIST_PAGE));
                 view.forward(request, response);
             break;
             
             case HELP:
-                response.sendRedirect(HELP_PAGE);
+                response.sendRedirect(response.encodeRedirectURL(HELP_PAGE));
             
             default:
                 refreshList(request, as);
-                view = request.getRequestDispatcher(LIST_PAGE);
+                view = request.getRequestDispatcher(response.encodeURL(LIST_PAGE));
                 view.forward(request, response);
                 
         }
