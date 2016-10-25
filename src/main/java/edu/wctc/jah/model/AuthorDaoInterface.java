@@ -7,6 +7,7 @@ package edu.wctc.jah.model;
 
 import java.sql.SQLException;
 import java.util.List;
+import javax.sql.DataSource;
 
 /**
  *
@@ -25,4 +26,6 @@ public interface AuthorDaoInterface {
     void editAuthor(String table, String primaryKey, Object pkValue, List<String> colnames, List<Object> colVals) throws ClassNotFoundException, SQLException; 
     
     void initDao(String driver, String url, String user, String pass);
+    
+    void initDao(DataSource ds) throws SQLException;
 }

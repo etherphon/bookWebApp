@@ -29,10 +29,16 @@
             <param-value>admin</param-value>
         </context-param>
         
-    <session-config>
-        <session-timeout>
+        <context-param>
+            <param-name>db.jndi.name</param-name>
+            <param-value>jdbc/name</param-value>
+        </context-param>
+        
+        <session-config>
+            <session-timeout>
             30
-        </session-timeout>
+            </session-timeout>
+        </session-config>
         <!--   This is an example of an application-wide init param. 
         It's called a ServletContext init param. You can have as many 
         init params as you want but there is only one servlet context; 
@@ -40,5 +46,4 @@
         accessed from any JSP page or servlet, which may not be what you 
         want. If not, see below. -->
        
-    </session-config>
 </web-app>

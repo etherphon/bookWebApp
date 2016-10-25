@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.sql.DataSource;
 import javax.enterprise.context.Dependent;
 
 /**
@@ -35,6 +36,12 @@ public class MySqlDbStrategy implements dbStrategy, Serializable {
         
         Class.forName(driverClass);
         conn = DriverManager.getConnection(url, userName, passWord);  
+    }
+    
+    @Override
+    public final void openConnection(DataSource ds) throws SQLException {
+        
+            conn = ds.getConnection();       
     }
     
     @Override

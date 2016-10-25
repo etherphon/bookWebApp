@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.sql.DataSource;
 
 /**
  *
@@ -31,6 +32,7 @@ public class AuthorDao implements AuthorDaoInterface, Serializable {
     @Inject
     private dbStrategy db;
     
+    private DataSource ds;
     private String driverClass;
     private String url;
     private String userName;
@@ -41,7 +43,11 @@ public class AuthorDao implements AuthorDaoInterface, Serializable {
     
     @Override
     public List<Author> getAuthorList() throws ClassNotFoundException, SQLException {
-        db.openConnection(driverClass, url, userName, passWord);
+        if (ds == null) {
+            db.openConnection(driverClass, url, userName, passWord);
+        } else {
+            db.openConnection(ds);
+        }
         List<Map<String, Object>> records = db.findAllRecords(AUTHOR, 500);
         List<Author> authors = new ArrayList<>();
         
@@ -64,7 +70,11 @@ public class AuthorDao implements AuthorDaoInterface, Serializable {
     @Override
     public Author findAuthorById(String id) throws ClassNotFoundException, SQLException {
         Author author = new Author();
-        db.openConnection(driverClass, url, userName, passWord);
+        if (ds == null) {
+            db.openConnection(driverClass, url, userName, passWord);
+        } else {
+            db.openConnection(ds);
+        }
         Map<String,Object> rec = new LinkedHashMap<>();
         
         rec = db.findRecordByKey(AUTHOR, AUTHOR_ID, id);
@@ -82,7 +92,11 @@ public class AuthorDao implements AuthorDaoInterface, Serializable {
     
     @Override
     public void deleteAuthorById(String id) throws SQLException, NumberFormatException, ClassNotFoundException {
-        db.openConnection(driverClass, url, userName, passWord);
+        if (ds == null) {
+            db.openConnection(driverClass, url, userName, passWord);
+        } else {
+            db.openConnection(ds);
+        }
         Integer pkv = Integer.parseInt(id);
         db.deleteRecordByKey(AUTHOR, AUTHOR_ID, pkv);
         db.closeConnection();
@@ -90,7 +104,11 @@ public class AuthorDao implements AuthorDaoInterface, Serializable {
     
     @Override
     public void addAuthor(String authorName) throws ClassNotFoundException, SQLException {
-        db.openConnection(driverClass, url, userName, passWord);
+        if (ds == null) {
+            db.openConnection(driverClass, url, userName, passWord);
+        } else {
+            db.openConnection(ds);
+        }
         List<String> columnNames = new ArrayList<>();
         columnNames.add(AUTHOR_N);
         columnNames.add(DATE_ADDED);
@@ -141,12 +159,22 @@ public class AuthorDao implements AuthorDaoInterface, Serializable {
     public void setPassWord(String passWord) {
         this.passWord = passWord;
     }
+    
+    public DataSource getDs() {
+        return ds;
+    }
+
+    public void setDs(DataSource ds) {
+        this.ds = ds;
+    }
    
-    
-    
     @Override
     public void editAuthor(String table, String primaryKey, Object pkValue, List<String> colnames, List<Object> colVals) throws ClassNotFoundException, SQLException {
-        db.openConnection(driverClass, url, userName, passWord);
+        if (ds == null) {
+            db.openConnection(driverClass, url, userName, passWord);
+        } else {
+            db.openConnection(ds);
+        }
         //List<String> columnNames = new ArrayList<>();
         //columnNames.add(AUTHOR_N);
         //columnNames.add(DATE_ADDED);
@@ -161,6 +189,12 @@ public class AuthorDao implements AuthorDaoInterface, Serializable {
         setUrl(url);
         setUserName(user);
         setPassWord(pass);
+    }
+
+    
+    @Override
+    public void initDao(DataSource ds) throws SQLException {
+        setDs(ds);
     }
     
     

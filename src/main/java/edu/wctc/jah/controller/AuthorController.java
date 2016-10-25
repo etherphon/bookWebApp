@@ -24,8 +24,12 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
 /**
  *
@@ -55,6 +59,8 @@ public class AuthorController extends HttpServlet {
         int numUpdated = 0;
         int numDeleted = 0;
         
+        private String dbJndiName;
+        
         @Inject
         private AuthorService as;
         
@@ -66,10 +72,18 @@ public class AuthorController extends HttpServlet {
         URL = getServletContext().getInitParameter("db.url");
         userName = getServletContext().getInitParameter("db.username");
         passWord = getServletContext().getInitParameter("db.password");
+        dbJndiName = getServletContext().getInitParameter("jb.jndi.name");
     }
     
-    private void configDbConnection() {
-        as.getDao().initDao(driverClass, URL, userName, passWord);
+    private void configDbConnection() throws NamingException, SQLException {
+        if (dbJndiName == null) {
+            as.getDao().initDao(driverClass, URL, userName, passWord);
+        } else {
+            Context ctx = new InitialContext();
+            DataSource ds = (DataSource) ctx.lookup(dbJndiName);
+            as.getDao().initDao(ds);
+        }
+        
     }
     
     /**
@@ -264,4 +278,13 @@ public class AuthorController extends HttpServlet {
         request.setAttribute("authorList", authorList);
     }
 
+    public String getDbJndiName() {
+        return dbJndiName;
+    }
+
+    public void setDbJndiName(String dbJndiName) {
+        this.dbJndiName = dbJndiName;
+    }
+
+    
 }
