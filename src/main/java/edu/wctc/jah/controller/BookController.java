@@ -6,8 +6,8 @@
 package edu.wctc.jah.controller;
 
 
-import edu.wctc.jah.ejb.AuthorFacade;
-import edu.wctc.jah.ejb.BookFacade;
+import edu.wctc.jah.service.AuthorService;
+import edu.wctc.jah.service.BookService;
 import edu.wctc.jah.model.Author;
 import edu.wctc.jah.model.Book;
 import java.io.IOException;
@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  *
@@ -46,11 +48,9 @@ public class BookController extends HttpServlet {
         
     private String dbJndiName;
         
-    @Inject
-    private BookFacade bs;
+    private BookService bs;
     
-    @Inject
-    private AuthorFacade as;
+    private AuthorService as;
         
     private RequestDispatcher view;
         
@@ -89,8 +89,8 @@ public class BookController extends HttpServlet {
                 Book book = new Book();
                 book.setTitle(bookName);
                 book.setIsbn(isbn);
-                book.setAuthorId(as.find(new Integer(author)));
-                bs.create(book);
+                book.setAuthorId(as.findById(author));
+                bs.edit(book);
                 numAdded++;
                 //session.setAttribute("numAdded", numAdded);
                 //request.setAttribute("addedAuthor", newAuthor);
@@ -103,10 +103,10 @@ public class BookController extends HttpServlet {
                 String updBook = request.getParameter("updBook");
                 String updIsbn = request.getParameter("updIsbn");
                 String updAuthor = request.getParameter("updAuthor");
-                Book bookEdit = bs.find(new Integer(bookId));
+                Book bookEdit = bs.findById(bookId);
                 bookEdit.setTitle(updBook);
                 bookEdit.setIsbn(updIsbn);
-                bookEdit.setAuthorId(as.find(new Integer(updAuthor)));
+                bookEdit.setAuthorId(as.findById(updAuthor));
                 bs.edit(bookEdit);
                 numUpdated++;
                 session.setAttribute("numUpdated", numUpdated);
@@ -118,7 +118,7 @@ public class BookController extends HttpServlet {
             case DEL:
                 bookId = request.getParameter("bookPk");
                 //as.find(new Integer(authId));
-                bs.remove(bs.find(new Integer(bookId)));
+                bs.remove(bs.findById(bookId));
                 numDeleted++;
                 session.setAttribute("numDeleted", numDeleted);
                 refreshList(request, bs);
@@ -175,6 +175,17 @@ public class BookController extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
+    
+    @Override
+    public void init() throws ServletException {
+        // Ask Spring for object to inject
+        ServletContext sctx = getServletContext();
+        WebApplicationContext ctx
+                = WebApplicationContextUtils.getWebApplicationContext(sctx);
+        bs = (BookService) ctx.getBean("bookService");
+        as = (AuthorService) ctx.getBean("authorService");
+
+    }
 
     /**
      * Returns a short description of the servlet.
@@ -186,23 +197,23 @@ public class BookController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    public BookFacade getBs() {
+    public BookService getBs() {
         return bs;
     }
 
-    public void setBs(BookFacade bs) {
+    public void setBs(BookService bs) {
         this.bs = bs;
     }
 
-    public AuthorFacade getAs() {
+    public AuthorService getAs() {
         return as;
     }
 
-    public void setAs(AuthorFacade as) {
+    public void setAs(AuthorService as) {
         this.as = as;
     }
     
-    public void refreshList(HttpServletRequest request, BookFacade bs) throws ClassNotFoundException, SQLException {
+    public void refreshList(HttpServletRequest request, BookService bs) throws ClassNotFoundException, SQLException {
         List<Book> bookList = bs.findAll();
         List<Author> authorList = getAs().findAll();
         request.setAttribute("authorList", authorList);

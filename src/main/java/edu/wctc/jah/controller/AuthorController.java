@@ -5,7 +5,10 @@
  */
 package edu.wctc.jah.controller;
 
-import edu.wctc.jah.ejb.AuthorFacade;
+import edu.wctc.jah.service.AuthorService;
+import edu.wctc.jah.service.BookService;
+import edu.wctc.jah.model.Author;
+import edu.wctc.jah.model.Book;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -27,6 +30,8 @@ import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  *
@@ -49,14 +54,16 @@ public class AuthorController extends HttpServlet {
         
         private String dbJndiName;
         
-        @Inject
-        private AuthorFacade as;
+        private AuthorService as;
         
         private RequestDispatcher view;
         
     @Override
     public void init() throws ServletException {
-    
+    ServletContext sctx = getServletContext();
+        WebApplicationContext ctx
+                = WebApplicationContextUtils.getWebApplicationContext(sctx);
+        as = (AuthorService) ctx.getBean("authorService");
     }
     
     /**
@@ -103,7 +110,7 @@ public class AuthorController extends HttpServlet {
                 Author author = new Author();
                 author.setAuthorName(newAuthor);
                 author.setDateAdded(new Date());
-                as.create(author);
+                as.edit(author);
                 numAdded++;
                 session.setAttribute("numAdded", numAdded);
                 request.setAttribute("addedAuthor", newAuthor);
@@ -114,7 +121,7 @@ public class AuthorController extends HttpServlet {
             
             case UPD:
                 String updAuthor = request.getParameter("updAuthor");
-                Author authorEdit = as.find(new Integer(authId));
+                Author authorEdit = as.findById(authId);
                 authorEdit.setAuthorName(updAuthor);
                 as.edit(authorEdit);
                 numUpdated++;
@@ -126,8 +133,7 @@ public class AuthorController extends HttpServlet {
             
             case DEL:
                 authId = request.getParameter("authorPk");
-                //as.find(new Integer(authId));
-                as.remove(as.find(new Integer(authId)));
+                as.remove(as.findById(authId));
                 numDeleted++;
                 session.setAttribute("numDeleted", numDeleted);
                 refreshList(request, as);
@@ -243,15 +249,15 @@ public class AuthorController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    public AuthorFacade getAs() {
+    public AuthorService getAs() {
         return as;
     }
 
-    public void setAs(AuthorFacade as) {
+    public void setAs(AuthorService as) {
         this.as = as;
     }
     
-    public void refreshList(HttpServletRequest request, AuthorFacade as) throws ClassNotFoundException, SQLException {
+    public void refreshList(HttpServletRequest request, AuthorService as) throws ClassNotFoundException, SQLException {
         List<Author> authorList = as.findAll();
         request.setAttribute("authorList", authorList);
     }
