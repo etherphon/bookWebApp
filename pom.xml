@@ -10,15 +10,18 @@
     <name>bookWebApp</name>
 
     <properties>
-        <org.springframework.version>4.2.5.RELEASE</org.springframework.version>
+        <org.springframework.version>4.2.2.RELEASE</org.springframework.version>
+        <spring-security.version>4.0.3.RELEASE</spring-security.version>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     
     <dependencies>
         <!--
-            We are swtich to the Hibernate provider for JPA. So we need
-            those libraries
+            Tomcat does not have built-in support for JPA so we need to 
+            add all JPA libraries, including the provider libraries. Here
+            we are using Hibernate. You will also see that we need to add
+            libraries for JSTL because JSTL is not in Tomcat either.
         -->
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
@@ -29,13 +32,13 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>4.3.11.Final</version>
+            <version>4.3.10.Final</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.2.4.Final</version>
+            <version>5.1.3.Final</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.xml.bind</groupId>
@@ -47,14 +50,16 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
-        <!-- These are the Java JEE libraries we need -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>
             <artifactId>persistence-api</artifactId>
             <version>1.0.2</version>
         </dependency>
-       
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
@@ -62,29 +67,52 @@
             <scope>provided</scope>
         </dependency>
         
-        <!-- We don't need this right now because Glassfish
-             has this built in. Only enable this if using a stripped
-             down server like Tomcat.
+        <!-- added to support Spring Security -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-        </dependency>        
-        -->
-           
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${spring-security.version}</version>
+        </dependency> 
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring-security.version}</version>
+        </dependency> 
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${spring-security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-taglibs</artifactId>
+            <version>${spring-security.version}</version>
+        </dependency>                
+        <!-- end spring security libs -->
+        
         <!--
             Simplified Data Access Using Spring Data Repository Features
         -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
-            <version>1.9.4.RELEASE</version>
+            <version>1.9.0.RELEASE</version>
         </dependency>
         
         <dependency>
             <groupId>com.mysema.querydsl</groupId>
+            <artifactId>querydsl-core</artifactId>
+            <version>3.6.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mysema.querydsl</groupId>
+            <artifactId>querydsl-apt</artifactId>
+            <version>3.6.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mysema.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
-            <version>3.6.9</version>
+            <version>3.6.8</version>
         </dependency>
 
         <!--
@@ -134,10 +162,8 @@
         </dependency>
  
         <!--
-            Application Context (depends on spring-core, spring-expression, 
-            spring-aop, spring-beans).
-            This is the central artifact for Spring's Dependency Injection 
-            Container and is generally always defined.
+            Application Context (depends on spring-core, spring-expression, spring-aop, spring-beans)
+            This is the central artifact for Spring's Dependency Injection Container and is generally always defined
         -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -153,7 +179,8 @@
         </dependency>
  
         <!--
-            Various Application Context utilities need this.
+            Various Application Context utilities, including EhCache, JavaMail, Quartz, and Freemarker integration
+            Define this if you need any of these integrations
         -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -162,10 +189,8 @@
         </dependency>
  
         <!--
-            Transaction Management Abstraction (depends on spring-core, 
-            spring-beans, spring-aop, spring-context)
-            Define this if you use Spring Transactions or 
-            DAO Exception Hierarchy
+            Transaction Management Abstraction (depends on spring-core, spring-beans, spring-aop, spring-context)
+            Define this if you use Spring Transactions or DAO Exception Hierarchy
             (org.springframework.transaction.*/org.springframework.dao.*)
         -->
         <dependency>
@@ -175,10 +200,8 @@
         </dependency>
  
         <!--
-            JDBC Data Access Library (depends on spring-core, spring-beans, 
-            spring-context, spring-tx).
-            Define this if you use Spring's JdbcTemplate API 
-            (org.springframework.jdbc.*)
+            JDBC Data Access Library (depends on spring-core, spring-beans, spring-context, spring-tx)
+            Define this if you use Spring's JdbcTemplate API (org.springframework.jdbc.*)
         -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -187,8 +210,7 @@
         </dependency>
  
         <!--
-            Object-to-Relation-Mapping (ORM) integration with Hibernate, JPA, 
-            and iBatis.
+            Object-to-Relation-Mapping (ORM) integration with Hibernate, JPA, and iBatis.
             (depends on spring-core, spring-beans, spring-context, spring-tx)
             Define this if you need ORM (org.springframework.orm.*)
         -->
@@ -199,8 +221,7 @@
         </dependency>
  
         <!--
-            Object-to-XML Mapping (OXM) abstraction and integration with JAXB, 
-            JiBX, Castor, XStream, and XML Beans.
+            Object-to-XML Mapping (OXM) abstraction and integration with JAXB, JiBX, Castor, XStream, and XML Beans.
             (depends on spring-core, spring-beans, spring-context)
             Define this if you need OXM (org.springframework.oxm.*)
         -->
@@ -211,11 +232,9 @@
         </dependency>
  
         <!--
-            Web application development utilities applicable to both Servlet 
-            and Portlet Environments
+            Web application development utilities applicable to both Servlet and Portlet Environments
             (depends on spring-core, spring-beans, spring-context)
-            Define this if you use Spring MVC, or wish to use Struts, JSF, or 
-            another web framework with Spring (org.springframework.web.*)
+            Define this if you use Spring MVC, or wish to use Struts, JSF, or another web framework with Spring (org.springframework.web.*)
         -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -224,10 +243,8 @@
         </dependency>
         
         <!--
-            Support for testing Spring applications with tools such as JUnit 
-            and TestNG. This artifact is generally always defined with a 
-            'test' scope for the integration testing framework and unit 
-            testing stubs
+            Support for testing Spring applications with tools such as JUnit and TestNG
+            This artifact is generally always defined with a 'test' scope for the integration testing framework and unit testing stubs
         -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -254,15 +271,16 @@
         <!--
             Superior logging framework works with Slf4j to replace log4j
         -->
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.1.7</version>
+            <version>1.1.3</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.1.7</version>
+            <version>1.1.3</version>
         </dependency>
                 
         <!--
@@ -271,19 +289,18 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.20</version>
+            <version>1.7.12</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.7.20</version>
+            <version>1.7.12</version>
         </dependency>    
         
-        <!-- JSON data transformation support -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.7.3</version>
+            <version>2.5.3</version>
         </dependency>  
     </dependencies>
 
@@ -336,6 +353,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>

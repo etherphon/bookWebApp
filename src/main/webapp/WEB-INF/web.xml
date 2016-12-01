@@ -16,6 +16,17 @@
         <listener>
             <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
         </listener>
+        
+        <!-- begin additional Spring Security config -->
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!-- end Spring security config -->
     
         <context-param>
             <param-name>webmaster-email</param-name>

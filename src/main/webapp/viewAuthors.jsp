@@ -8,6 +8,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 
 
@@ -55,10 +56,12 @@
                     </tbody>
                 </table>
                 <div class="col-md-6">
-                    <input class="btn btn-default btn-sm cButton" type="button" name="fActionAdd" id="fActionAdd" value="Add">
-                    <input class="btn btn-default btn-sm cButton" type="button" name="fActionUpd" id="fActionUpd" value="Update">
-                    <input class="btn btn-default btn-sm cButton" type="button" name="fActionDel" id="fActionDel" value="Delete">
-                    <input class="btn btn-default btn-sm cButton" type="button" name="fActionHelp" id="fActionHelp" value="Help">
+                    <sec:authorize access="hasAnyRole('ROLE_MGR')">
+                        <input class="btn btn-default btn-sm cButton" type="button" name="fActionAdd" id="fActionAdd" value="Add">
+                        <input class="btn btn-default btn-sm cButton" type="button" name="fActionUpd" id="fActionUpd" value="Update">
+                        <input class="btn btn-default btn-sm cButton" type="button" name="fActionDel" id="fActionDel" value="Delete">
+                        <input class="btn btn-default btn-sm cButton" type="button" name="fActionHelp" id="fActionHelp" value="Help">
+                    </sec:authorize>
                 </div>
                 
                 
@@ -118,5 +121,13 @@
         
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <!-- ${applicationScope['attributeNames']} -->
+        <div class="row" id="logout">
+            <div class="col-md-6">
+                <sec:authorize access="hasAnyRole('ROLE_MGR','ROLE_USER')">
+                    Logged in as: <sec:authentication property="principal.username"></sec:authentication> ::
+                    <a href='<%= this.getServletContext().getContextPath() + "/j_spring_security_logout"%>'>Log Me Out</a>
+                </sec:authorize>
+            </div>
+        </div>
     </body>
 </html>
